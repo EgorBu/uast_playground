@@ -74,7 +74,9 @@ class Repo2IdStr(Repo2Base):
             text = []
             with open(file_uast.filepath) as f:
                 for line in f.readlines():
-                    text.append(line.strip())
+                    
+
+                    text.append(line.rstrip())
 
             self.uast2str(file_uast.response.uast, text)
             print("\n".join(text))
