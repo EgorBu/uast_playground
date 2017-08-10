@@ -20,11 +20,12 @@ class Repo2IdStr(Repo2Base):
     """
     MODEL_CLASS = Repo2IdStrModel
 
-    def __init__(self, *args, role=SIMPLE_IDENTIFIER, color=GREEN, **kwargs):
+    def __init__(self, *args, role=SIMPLE_IDENTIFIER, color=GREEN, err_color=RED, **kwargs):
         super(Repo2IdStr, self).__init__(*args, **kwargs)
         self.role = role
         self.color = color
         self.background = WHITE
+        self.err_color = err_color
 
     def find_max_pos(self, root, max_pos=None):
         if max_pos is None:
@@ -35,6 +36,9 @@ class Repo2IdStr(Repo2Base):
             max_pos = self.find_max_pos(ch, max_pos)
 
         return max_pos
+
+    def colorize_str(self, text, color):
+        return color + text + self.background
 
     def uast2str(self, root, text):
         for ch in root.children:
@@ -48,17 +52,18 @@ class Repo2IdStr(Repo2Base):
                 # check correctness of length
                 if end_col - start_col != len(ch.token):
                     # something wrong with length of token
-                    print(
-                        "Wrong length of token '%s' (expected %d - %d = %d)" %
-                        (ch.token, end_col, start_col, end_col - start_col)
-                    )
+                    err = "!Wrong length of token '%s' (expected %d - %d + 1 == %d)!" %\
+                          (ch.token, end_col, start_col + 1, len(ch.token))
+                    err = self.colorize_str(err, self.err_color)
+                    text[start_line] += err
                     skip_id = True
 
                 # check that token has the same start & end line
                 if start_line != end_line:
-                    print("Something wrong with token '%s' start & end line: %d, %d" % (ch.token,
-                                                                                        start_line,
-                                                                                        end_line))
+                    err = "!token '%s' start & end line: %d, %d!" % (ch.token, start_line,
+                                                                     end_line)
+                    err = self.colorize_str(err, self.err_color)
+                    text[start_line] += err
                     skip_id = True
 
                 if not skip_id:
@@ -74,8 +79,6 @@ class Repo2IdStr(Repo2Base):
             text = []
             with open(file_uast.filepath) as f:
                 for line in f.readlines():
-                    
-
                     text.append(line.rstrip())
 
             self.uast2str(file_uast.response.uast, text)
