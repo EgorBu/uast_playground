@@ -23,8 +23,7 @@ def main():
     repo2id_str_parser.add_argument(
         "-r", "--repository", required=True, nargs="+", help="URLs or files with URLs.")
     repo2id_str_parser.add_argument(
-        "--linguist", help="Path to src-d/enry executable. If specified will save only files "
-        "classified by enry.")
+        "--linguist", help="Path to src-d/enry executable")
     repo2id_str_parser.add_argument(
         "--role", default=SIMPLE_IDENTIFIER, type=int, help="UAST role to colorize.")
     repo2id_str_parser.add_argument(
