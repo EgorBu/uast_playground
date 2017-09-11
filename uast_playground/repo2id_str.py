@@ -74,10 +74,6 @@ class Repo2IdStr(Repo2Base):
                     err = "# Something wrong with token '%s' - it has position (%d, %d)"
                     err = err % (ch.token, ch.start_position.line, ch.start_position.col)
                     print(self.colorize_str(err, self.err_color))
-
-                    if ch.token == "":
-                        print(ch)
-
                 elif (ch.start_position.line, ch.start_position.col) in pos_token:
                     err = "# New token '%s' at position (%d, %d) has the same position as token " \
                           "'%s' at the same position. Skip new token."
@@ -129,7 +125,7 @@ class Repo2IdStr(Repo2Base):
                         err = err % (token, node.start_position.line, node.start_position.col,
                                      text[i][start_col:start_col + len(token)])
                         err = self.colorize_str(err, self.err_color)
-
+                        print(err)
                         errors[i].append(err)
                         skip_token = True
 
